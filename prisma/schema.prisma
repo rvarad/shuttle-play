@@ -1,0 +1,103 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                   Int         @id @default(autoincrement())
+  firstName            String
+  lastName             String
+  email                String
+  verificationToken    String
+  createdAt            DateTime    @default(now())
+  level                Level
+  updatedAt            DateTime    @default(now())
+  hostedGames          Game[]      @relation("host")
+  playedGames          Game[]      @relation("GameToUser")
+  creatorOfCommunities Community[] @relation("creator")
+  adminOfCommunities   Community[] @relation("admins")
+  memberOfCommunities  Community[] @relation("members")
+  Post                 Post[]      @relation("postAuthor")
+  upvotedPosts         Post[]      @relation("postUpvoters")
+  downvotedPosts       Post[]      @relation("postDownvoters")
+  comments             Comment[]   @relation("commentAuthor")
+  upvotedComments      Comment[]   @relation("commentUpvoters")
+  downvotedComments    Comment[]   @relation("commentDownvoters")
+}
+
+model Game {
+  id                Int        @id @default(autoincrement())
+  createdAt         DateTime
+  updatedAt         DateTime
+  hostId            Int
+  timing            DateTime
+  level             Level
+  typeOfGame        TypeOfGame
+  area              String
+  bookingAmountPool Int
+  host              User       @relation("host", fields: [hostId], references: [id])
+  players           User[]     @relation("GameToUser")
+}
+
+model Community {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  createdBy   User     @relation("creator", fields: [creatorId], references: [id])
+  creatorId   Int
+  admins      User[]   @relation("admins")
+  members     User[]   @relation("members")
+  posts       Post[]   @relation("postedInCommunities")
+}
+
+model Post {
+  id                  Int         @id @default(autoincrement())
+  author              User        @relation("postAuthor", fields: [authorId], references: [id])
+  authorId            Int
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @default(now())
+  title               String
+  body                String      @default("")
+  media               String?
+  postedInCommunities Community[] @relation("postedInCommunities")
+  comments            Comment[]   @relation("postComments")
+  upvoters            User[]      @relation("postUpvoters")
+  downvoters          User[]      @relation("postDownvoters")
+}
+
+model Comment {
+  id               Int       @id @default(autoincrement())
+  author           User      @relation("commentAuthor", fields: [authorId], references: [id])
+  authorId         Int
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now())
+  post             Post      @relation("postComments", fields: [postId], references: [id])
+  postId           Int
+  body             String
+  media            String?
+  parentComment    Comment   @relation("parentComment", fields: [parentCommentId], references: [id])
+  parentCommentId  Int
+  childrenComments Comment[] @relation("childrenComments")
+  upvoters         User[]    @relation("commentUpvoters")
+  downvoters       User[]    @relation("commentDownvoters")
+  comment          Comment[] @relation("parentComment")
+  comments         Comment[] @relation("childrenComments")
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  PROFICIENT
+}
+
+enum TypeOfGame {
+  SINGLES
+  DOUBLES
+  MIXED_DOUBLES
+}
