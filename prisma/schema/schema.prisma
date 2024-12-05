@@ -1,0 +1,21 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters", "prismaSchemaFolder"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Level {
+  BEGINNER
+  INTERMEDIATE
+  PROFICIENT
+}
+
+enum TypeOfGame {
+  SINGLES
+  DOUBLES
+  MIXED_DOUBLES
+}

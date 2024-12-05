@@ -1,0 +1,9 @@
+model VerificationToken {
+  id           String   @default(uuid())
+  email        String   @unique
+  existingUser Boolean
+  otp          String
+  expires      DateTime
+
+  @@id([id, email])
+}

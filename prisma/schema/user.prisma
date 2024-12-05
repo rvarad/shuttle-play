@@ -1,0 +1,27 @@
+model User {
+  id                   String      @id @default(uuid())
+  // firstName            String
+  // lastName             String
+  name                 String?
+  username             String?     @unique
+  email                String      @unique
+  image                String?
+  emailVerified        DateTime?
+  // verificationToken    String
+  createdAt            DateTime    @default(now())
+  updatedAt            DateTime    @updatedAt
+  accounts             Account[]
+  // sessions             Session[]
+  level                Level?
+  comments             Comment[]   @relation("commentAuthor")
+  creatorOfCommunities Community[] @relation("creator")
+  hostedGames          Game[]      @relation("host")
+  Post                 Post[]      @relation("postAuthor")
+  playedGames          Game[]      @relation("GameToUser")
+  adminOfCommunities   Community[] @relation("admins")
+  downvotedComments    Comment[]   @relation("commentDownvoters")
+  upvotedComments      Comment[]   @relation("commentUpvoters")
+  memberOfCommunities  Community[] @relation("members")
+  downvotedPosts       Post[]      @relation("postDownvoters")
+  upvotedPosts         Post[]      @relation("postUpvoters")
+}

@@ -1,0 +1,18 @@
+model Comment {
+  id                         String    @id @default(uuid())
+  authorId                   String
+  createdAt                  DateTime  @default(now())
+  updatedAt                  DateTime  @default(now())
+  postId                     String
+  body                       String
+  media                      String?
+  parentCommentId            String
+  author                     User      @relation("commentAuthor", fields: [authorId], references: [id])
+  parentComment              Comment   @relation("parentComment", fields: [parentCommentId], references: [id])
+  comment                    Comment[] @relation("parentComment")
+  post                       Post      @relation("postComments", fields: [postId], references: [id])
+  Comment_childrenComments_A Comment[] @relation("childrenComments")
+  Comment_childrenComments_B Comment[] @relation("childrenComments")
+  downvoters                 User[]    @relation("commentDownvoters")
+  upvoters                   User[]    @relation("commentUpvoters")
+}

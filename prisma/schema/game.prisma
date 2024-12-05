@@ -1,0 +1,13 @@
+model Game {
+  id                String     @id @default(uuid())
+  createdAt         DateTime
+  updatedAt         DateTime
+  hostId            String
+  timing            DateTime
+  level             Level
+  typeOfGame        TypeOfGame
+  area              String
+  bookingAmountPool Int
+  host              User       @relation("host", fields: [hostId], references: [id])
+  players           User[]     @relation("GameToUser")
+}
